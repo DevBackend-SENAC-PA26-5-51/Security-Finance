@@ -1,26 +1,61 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAutenticacaoDto } from './dto/create-autenticacao.dto';
-import { UpdateAutenticacaoDto } from './dto/update-autenticacao.dto';
+import {
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+
+import { JwtService } from '@nestjs/jwt';
+
+import { ClienteService } from '../cliente/cliente.service.js';
+import { FuncionarioService } from '../funcionario/funcionario.service.js';
 
 @Injectable()
 export class AutenticacaoService {
-  create(createAutenticacaoDto: CreateAutenticacaoDto) {
-    return 'This action adds a new autenticacao';
+  constructor(
+    private readonly clienteService: ClienteService,
+    private readonly funcionarioService: FuncionarioService,
+    private readonly jwtService: JwtService,
+  ) {}
+
+  async login(email: string, senha: string) {
+    const cliente = await this.clienteService.buscarPorEmail(email);
+
+    if (cliente && cliente.senha === senha) {
+      return this.gerarToken(
+        cliente.ID,
+        'cliente',
+        cliente.email,
+      );
+    }
+
+    const funcionario =
+      await this.funcionarioService.buscarPorEmail(email);
+
+    if (funcionario && funcionario.senha === senha) {
+      return this.gerarToken(
+        funcionario.ID,
+        'funcionario',
+        funcionario.email,
+      );
+    }
+
+    throw new UnauthorizedException(
+      'Email ou senha inválidos',
+    );
   }
 
-  findAll() {
-    return `This action returns all autenticacao`;
-  }
+  private gerarToken(
+    id: number,
+    tipo: 'cliente' | 'funcionario',
+    email: string | null | undefined,
+  ) {
+    const payload = {
+      sub: id,
+      email,
+      tipo,
+    };
 
-  findOne(id: number) {
-    return `This action returns a #${id} autenticacao`;
-  }
-
-  update(id: number, updateAutenticacaoDto: UpdateAutenticacaoDto) {
-    return `This action updates a #${id} autenticacao`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} autenticacao`;
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
   }
 }
