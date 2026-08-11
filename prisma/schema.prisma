@@ -75,6 +75,12 @@ model Estornos {
   @@index([Funcion_rio_ID], map: "fk_Estornos_Funcionário1_idx")
 }
 
+model Faturamento {
+  id               Int      @id @default(autoincrement())
+  data_faturamento DateTime @unique(map: "data_faturamento") @db.Date
+  valor            Decimal  @db.Decimal(10, 2)
+}
+
 model Funcionario {
   ID                          Int       @unique(map: "ID_UNIQUE") @default(autoincrement()) @db.UnsignedInt
   CPF                         String?   @db.VarChar(11)
