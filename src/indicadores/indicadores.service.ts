@@ -18,11 +18,11 @@ export class IndicadoresService {
       }
     });
 
-    
+
   }
 
   async resumo(){
-    const entradas = await this.prisma.hist_rico_de_transa__o.aggregate({
+    const entradas = await this.prisma.historico_de_transacao.aggregate({
       _sum:{
         valor: true
       }
@@ -38,7 +38,7 @@ export class IndicadoresService {
     });
 
     //Quantidade de transações
-    const quantidadeTransacoes = await this.prisma.hist_rico_de_transa__o.count();
+    const quantidadeTransacoes = await this.prisma.historico_de_transacao.count();
 
     // Se não existir nenhum valor, considera 0 
     const toatalEntradas = entradas._sum.valor ?? 0;
