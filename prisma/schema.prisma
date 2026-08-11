@@ -123,7 +123,6 @@ model Notas_Fiscais {
   valor         String?   @db.VarChar(45)
   datahora_nota DateTime? @db.DateTime(0)
   Cliente_ID    Int       @db.UnsignedInt
-  Compras       Compras[]
   Cliente       Cliente   @relation(fields: [Cliente_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "fk_Notas Fiscais_Cliente1")
 
   @@id([ID, Cliente_ID])
