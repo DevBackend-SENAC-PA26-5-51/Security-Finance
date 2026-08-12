@@ -16,6 +16,11 @@ export class IndicadoresController {
   findAll() {
     return this.indicadoresService.findAll();
   }
+  
+  @Get('dashboard')
+  dashboard(){
+    return this.indicadoresService.dashboard();
+  }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
