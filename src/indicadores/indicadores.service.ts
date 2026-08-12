@@ -30,7 +30,7 @@ export class IndicadoresService {
         },
         where: {
           Estornos: {
-           Status: 'Aprovado',
+            Status: 'Aprovado',
           },
         },
       });
@@ -38,7 +38,7 @@ export class IndicadoresService {
     const totalEstornos = estornos._sum.valor ?? 0;
 
     const Saldoatual = totalPgto - totalEstornos;
-    
+
 
 
     let quantidaeTrasacao = await this.prisma.historico_de_transacao.aggregate({
@@ -103,12 +103,12 @@ export class IndicadoresService {
     SELECT
     DATE_FORMAT(datahora_pagamento, '%Y-%m') AS mes,
     COALESCE(SUM(valor), 0) AS total
-  FROM Pagamentos
-  WHERE status = 'Pago'
-    AND datahora_pagamento IS NOT NULL
-  GROUP BY DATE_FORMAT(datahora_pagamento, '%Y-%m')
+  FROM Historico_de_transacao
+  WHERE datahora_transacao IS NOT NULL
+   GROUP BY DATE_FORMAT(datahora_transacao, '%Y-%m')
   ORDER BY mes;
   `;
+
     // Saidas agrupadas por mês
     const saidas = await this.prisma.$queryRaw<
       {
@@ -119,7 +119,7 @@ export class IndicadoresService {
         SELECT
         DATE_FORMAT(datahora_pagamento, '%Y-%m') AS mes,
         COALESCE(SUM(valor), 0) AS total
-      FROM Pagamentos'
+      FROM Pagamentos
       WHERE status = 'Pago'
         AND datahora_pagamento IS NOT NULL
       GROUP BY DATE_FORMAT(datahora_pagamento, '%Y-%m')
