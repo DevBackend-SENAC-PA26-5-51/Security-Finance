@@ -4,6 +4,7 @@ import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { IndicadoresModule } from './indicadores/indicadores.module.js';
+import { MovimentacoesModule } from './movimentacoes/movimentacoes.module.js';
 
 import { FaturamentoController } from './faturamento/faturamento.controller.js';
 import { FaturamentoService } from './faturamento/faturamento.service.js';
@@ -13,7 +14,7 @@ import { ClienteModule } from './cliente/cliente.module.js';
 import { FuncionarioModule } from './funcionario/funcionario.module.js';
 
 @Module({    
-  imports: [PrismaModule, AutenticacaoModule, ClienteModule, FuncionarioModule, FaturamentoModule, IndicadoresModule],
+  imports: [PrismaModule, AutenticacaoModule, ClienteModule, FuncionarioModule, FaturamentoModule, IndicadoresModule,MovimentacoesModule],
   controllers: [AppController, FaturamentoController],
   providers: [AppService, FaturamentoService],
 })
