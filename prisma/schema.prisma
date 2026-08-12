@@ -16,31 +16,31 @@ model Cliente {
   senha                  String?                  @db.VarChar(45)
   telefone               String?                  @db.VarChar(15)
   Compras                Compras[]
-  Endere_os_Clientes     Endere_os_Clientes[]
-  Hist_rico_de_transa__o Hist_rico_de_transa__o[]
+  Enderecos_Clientes     Enderecos_Clientes[]
+  Historico_de_transacao Historico_de_transacao[]
   Notas_Fiscais          Notas_Fiscais[]
 }
 
 model Compras {
-  ID                                Int                    @unique(map: "ID_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  ID                                Int                    @unique(map: "ID_UNIQUE") @default(autoincrement())
   status                            String?                @db.VarChar(45)
   item                              String?                @db.VarChar(45)
   datahora_compra                   DateTime?              @db.DateTime(0)
-  Hist_rico_de_transa__o_ID         Int                    @map("Histórico de transação_ID")
-  Hist_rico_de_transa__o_Cliente_ID Int                    @map("Histórico de transação_Cliente_ID") @db.UnsignedInt
+  Historico_de_transacao_ID         Int
+  Historico_de_transacao_Cliente_ID Int                    @db.UnsignedInt
   Cliente_ID                        Int                    @db.UnsignedInt
   Notas_Fiscais_ID                  Int                    @map("Notas Fiscais_ID")
   Cliente                           Cliente                @relation(fields: [Cliente_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "fk_Compras_Cliente1")
-  Hist_rico_de_transa__o            Hist_rico_de_transa__o @relation(fields: [Hist_rico_de_transa__o_ID, Hist_rico_de_transa__o_Cliente_ID], references: [ID, Cliente_ID], onDelete: NoAction, onUpdate: NoAction, map: "fk_Compras_Histórico de transação1")
+  Historico_de_transacao            Historico_de_transacao @relation(fields: [Historico_de_transacao_ID, Historico_de_transacao_Cliente_ID], references: [ID, Cliente_ID], onDelete: NoAction, onUpdate: NoAction, map: "fk_Compras_Histórico de transação1")
   Notas_Fiscais                     Notas_Fiscais          @relation(fields: [Notas_Fiscais_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "fk_Compras_Notas Fiscais1")
 
-  @@id([ID, Hist_rico_de_transa__o_ID, Hist_rico_de_transa__o_Cliente_ID, Cliente_ID, Notas_Fiscais_ID])
-  @@index([Cliente_ID], map: "fk_Compras_Cliente1_idx")
-  @@index([Hist_rico_de_transa__o_ID, Hist_rico_de_transa__o_Cliente_ID], map: "fk_Compras_Histórico de transação1_idx")
-  @@index([Notas_Fiscais_ID], map: "fk_Compras_Notas Fiscais1_idx")
+  @@id([ID, Historico_de_transacao_ID, Historico_de_transacao_Cliente_ID, Cliente_ID, Notas_Fiscais_ID])
+  @@index([Cliente_ID], map: "fk_Compras_Cliente_idx")
+  @@index([Historico_de_transacao_ID, Historico_de_transacao_Cliente_ID], map: "fk_Compras_Historico_de_transacao_idx")
+  @@index([Notas_Fiscais_ID], map: "fk_Compras_Notas_Fiscais_idx")
 }
 
-model Endere_os_Clientes {
+model Enderecos_Clientes {
   ID          Int     @unique(map: "ID_UNIQUE") @default(autoincrement())
   Cidade      String? @db.VarChar(45)
   Bairro      String? @db.VarChar(45)
@@ -52,11 +52,10 @@ model Endere_os_Clientes {
   Cliente     Cliente @relation(fields: [Cliente_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "fk_Endereços_Clientes_Cliente1")
 
   @@id([ID, Cliente_ID])
-  @@index([Cliente_ID], map: "fk_Endereços_Clientes_Cliente1_idx")
-  @@map("Endereços Clientes")
+  @@index([Cliente_ID], map: "fk_Enderecos_Clientes_Cliente1_idx")
 }
 
-model Endere_os_Funcion_rios {
+model Enderecos_Funcionarios {
   ID          Int     @id @unique(map: "ID_UNIQUE") @default(autoincrement())
   Cidade      String? @db.VarChar(45)
   Bairro      String? @db.VarChar(45)
@@ -64,8 +63,6 @@ model Endere_os_Funcion_rios {
   CEP         Int?
   NUMERO      Int?
   COMPLEMENTO String? @db.VarChar(45)
-
-  @@map("Endereços Funcionários")
 }
 
 model Estornos {
@@ -73,34 +70,39 @@ model Estornos {
   datahora_estorno DateTime?    @db.DateTime(0)
   Motivo           String?      @db.TinyText
   Status           String?      @db.VarChar(45)
-  Funcion_rio_ID   Int          @map("Funcionário_ID") @db.UnsignedInt
-  Funcion_rio      Funcion_rio  @relation(fields: [Funcion_rio_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "fk_Estornos_Funcionário1")
+  Funcionario_ID   Int          @db.UnsignedInt
+  Funcionario      Funcionario  @relation(fields: [Funcionario_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "fk_Estornos_Funcionário1")
   Pagamentos       Pagamentos[]
 
-  @@id([ID, Funcion_rio_ID])
-  @@index([Funcion_rio_ID], map: "fk_Estornos_Funcionário1_idx")
+  @@id([ID, Funcionario_ID])
+  @@index([Funcionario_ID], map: "fk_Estornos_Funcionario_idx")
 }
 
-model Funcion_rio {
-  ID                          Int        @unique(map: "ID_UNIQUE") @default(autoincrement()) @db.UnsignedInt
-  CPF                         String?    @db.VarChar(11)
-  data_nascimento             DateTime?  @db.Date
-  nome                        String?    @db.VarChar(75)
-  cargo                       String?    @db.VarChar(45)
-  email                       String?    @db.VarChar(50)
-  senha                       String?    @db.VarChar(45)
-  data_admissao               DateTime?  @db.Date
-  telefone                    String?    @db.VarChar(15)
-  ativo                       Int?       @db.TinyInt
-  Endere_os_Clientes_copy1_ID Int        @map("Endereços_Clientes_copy1_ID")
-  Estornos                    Estornos[]
-
-  @@id([ID, Endere_os_Clientes_copy1_ID])
-  @@index([Endere_os_Clientes_copy1_ID], map: "fk_Funcionário_Endereços_Clientes_copy11_idx")
-  @@map("Funcionário")
+model Faturamento {
+  id               Int      @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  data_faturamento DateTime @unique(map: "data_faturamento_UNIQUE") @db.Date
+  valor            Decimal  @db.Decimal(10, 2)
 }
 
-model Hist_rico_de_transa__o {
+model Funcionario {
+  ID                    Int        @unique(map: "ID_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  CPF                   String?    @db.VarChar(11)
+  data_nascimento       DateTime?  @db.Date
+  nome                  String?    @db.VarChar(75)
+  cargo                 String?    @db.VarChar(45)
+  email                 String?    @db.VarChar(50)
+  senha                 String?    @db.VarChar(45)
+  data_admissao         DateTime?  @db.Date
+  telefone              String?    @db.VarChar(15)
+  ativo                 Int?       @db.TinyInt
+  Enderecos_Clientes_ID Int
+  Estornos              Estornos[]
+
+  @@id([ID, Enderecos_Clientes_ID])
+  @@index([Enderecos_Clientes_ID], map: "fk_Funcionario_Enderecos_Clientes_idx")
+}
+
+model Historico_de_transacao {
   ID                 Int          @unique(map: "ID_UNIQUE") @default(autoincrement())
   valor              Float?       @db.Float
   datahora_transacao DateTime?    @db.DateTime(0)
@@ -112,13 +114,12 @@ model Hist_rico_de_transa__o {
   Pagamentos         Pagamentos[]
 
   @@id([ID, Cliente_ID])
-  @@index([Cliente_ID], map: "fk_Histórico de transação_Cliente_idx")
-  @@map("Histórico de transação")
+  @@index([Cliente_ID], map: "fk_Historico_de_transacao_Cliente_idx")
 }
 
 model Notas_Fiscais {
   ID            Int       @unique(map: "ID_UNIQUE") @default(autoincrement())
-  descri__o     String?   @map("descrição") @db.VarChar(45)
+  descricao     String?   @db.VarChar(45)
   valor         String?   @db.VarChar(45)
   datahora_nota DateTime? @db.DateTime(0)
   Cliente_ID    Int       @db.UnsignedInt
@@ -127,7 +128,6 @@ model Notas_Fiscais {
 
   @@id([ID, Cliente_ID])
   @@index([Cliente_ID], map: "fk_Notas Fiscais_Cliente1_idx")
-  @@map("Notas Fiscais")
 }
 
 model Pagamentos {
@@ -135,15 +135,15 @@ model Pagamentos {
   valor                             Float?                 @db.Float
   datahora_pagamento                DateTime?              @db.DateTime(0)
   metodo_pagamento                  String?                @db.VarChar(45)
-  descri__o                         String?                @map("descrição") @db.VarChar(45)
+  descricao                         String?                @db.VarChar(45)
   status                            String?                @db.VarChar(45)
-  Hist_rico_de_transa__o_ID         Int                    @map("Histórico de transação_ID")
-  Hist_rico_de_transa__o_Cliente_ID Int                    @map("Histórico de transação_Cliente_ID") @db.UnsignedInt
+  Historico_de_transacao_ID         Int
+  Historico_de_transacao_Cliente_ID Int                    @db.UnsignedInt
   Estornos_ID                       Int
   Estornos                          Estornos               @relation(fields: [Estornos_ID], references: [ID], onDelete: NoAction, onUpdate: NoAction, map: "fk_Pagamentos_Estornos1")
-  Hist_rico_de_transa__o            Hist_rico_de_transa__o @relation(fields: [Hist_rico_de_transa__o_ID, Hist_rico_de_transa__o_Cliente_ID], references: [ID, Cliente_ID], onDelete: NoAction, onUpdate: NoAction, map: "fk_Pagamentos_Histórico de transação1")
+  Historico_de_transacao            Historico_de_transacao @relation(fields: [Historico_de_transacao_ID, Historico_de_transacao_Cliente_ID], references: [ID, Cliente_ID], onDelete: NoAction, onUpdate: NoAction, map: "fk_Pagamentos_Histórico de transação1")
 
-  @@id([Id, Hist_rico_de_transa__o_ID, Hist_rico_de_transa__o_Cliente_ID, Estornos_ID])
-  @@index([Estornos_ID], map: "fk_Pagamentos_Estornos1_idx")
-  @@index([Hist_rico_de_transa__o_ID, Hist_rico_de_transa__o_Cliente_ID], map: "fk_Pagamentos_Histórico de transação1_idx")
+  @@id([Id, Historico_de_transacao_ID, Historico_de_transacao_Cliente_ID, Estornos_ID])
+  @@index([Estornos_ID], map: "fk_Pagamentos_Estornos_idx")
+  @@index([Historico_de_transacao_ID, Historico_de_transacao_Cliente_ID], map: "fk_Pagamentos_Historico_de_transacao_idx")
 }
