@@ -114,7 +114,7 @@ model Historico_de_transacao {
   Pagamentos         Pagamentos[]
 
   @@id([ID, Cliente_ID])
-  @@index([Cliente_ID], map: "fk_historico_cliente")
+  @@index([Cliente_ID], map: "fk_Historico_de_transacao_Cliente_idx")
 }
 
 model Notas_Fiscais {
