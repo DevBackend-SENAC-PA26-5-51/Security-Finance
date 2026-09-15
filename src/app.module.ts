@@ -6,8 +6,6 @@ import { PrismaModule } from './prisma/prisma.module.js';
 import { IndicadoresModule } from './indicadores/indicadores.module.js';
 import { MovimentacoesModule } from './movimentacoes/movimentacoes.module.js';
 
-import { FaturamentoController } from './faturamento/faturamento.controller.js';
-import { FaturamentoService } from './faturamento/faturamento.service.js';
 import { FaturamentoModule } from './faturamento/faturamento.module.js';
 
 import { ClienteModule } from './cliente/cliente.module.js';
